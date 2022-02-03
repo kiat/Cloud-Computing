@@ -53,18 +53,6 @@ To compile the project and create a single jar file with all dependencies:
 
 
 ##############################
-### AWS Elastic MapReduce ####
-##############################
-
-
-Running on AWS Elastic MapReduce 
-
-As argument give your input and output directories. 
-
-    s3://metcs755/WikipediaPages_oneDocPerLine_1000Lines_small.txt   s3://metcs755/output
-
-
-##############################
 ## Tutorial Link for Maven ###
 ##############################
 
