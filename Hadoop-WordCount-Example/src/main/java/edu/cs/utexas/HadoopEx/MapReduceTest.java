@@ -1,4 +1,4 @@
-package edu.bu.metcs.HadoopEx;
+package edu.cs.utexas.HadoopEx;
 
 import java.io.IOException;
 import java.util.*;
