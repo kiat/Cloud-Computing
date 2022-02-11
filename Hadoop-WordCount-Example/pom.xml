@@ -33,16 +33,20 @@
 					</execution>
 				</executions>
 				<configuration>
+					<archive>
+						<manifest>
+							<mainClass>edu.cs.utexas.HadoopEx.WordCount</mainClass>
+						</manifest>
+					</archive>
 					<descriptorRefs>
 						<descriptorRef>jar-with-dependencies</descriptorRef>
 					</descriptorRefs>
-					<archive>
-						<manifest>
-							<mainClass>edu.bu.metcs.HadoopEx.WordCount</mainClass>
-						</manifest>
-					</archive>
 				</configuration>
 			</plugin>
+			
+			
+			
+			
 
 		</plugins>
 	</build>
