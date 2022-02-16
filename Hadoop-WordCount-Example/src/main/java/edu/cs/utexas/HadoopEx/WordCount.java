@@ -24,6 +24,8 @@ public class WordCount extends Configured implements Tool {
 	 */
 
 	public static void main(String[] args) throws Exception {
+		System.out.println(args[0]);
+		System.out.println(args[1]);
 		int res = ToolRunner.run(new Configuration(), new WordCount(), args);
 		System.exit(res);
 	}
