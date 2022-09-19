@@ -15,7 +15,10 @@
 # https://docs.datastax.com/en/developer/python-driver/3.24/getting_started/
 from cassandra.cluster import Cluster
 
+# cluster = Cluster([('localhost', 9042)])
+
 cluster = Cluster()
+
 session = cluster.connect()
 
 # Documentation link https://cassandra.apache.org/doc/latest/cassandra/data_modeling/data_modeling_rdbms.html

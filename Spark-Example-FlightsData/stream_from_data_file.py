@@ -35,7 +35,7 @@ def main(filename):
            counter += 1
 
            # Sleep for some time
-           time.sleep(0.5)
+           time.sleep(0.05)
            conn.send(line.encode('utf-8'))
 
            if(counter % 100 == 0):
