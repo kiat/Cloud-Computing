@@ -36,6 +36,13 @@ https://www.mongodb.com/docs/mongodb-shell/
 
 https://www.mongodb.com/languages/python
 
+##  Running MongoDB on Docker 
+
+```docker pull mongo```
+
+```docker run -d --name mongo -P mongo```
+
+
 
 # Apache Cassandra 
 
