@@ -15,6 +15,9 @@ https://github.com/voldemort/voldemort/blob/master/example/shell/example-command
 
 https://github.com/voldemort/voldemort/blob/master/example/java/voldemort/examples/ClientExample.java
 
+# Redis 
+
+https://redis.io/ 
 
 
 # MongoDB
