@@ -1,3 +1,15 @@
+# run 
+# docker pull mongo
+# docker run -d -p 27017:27017  mongo
+
+# docker exec -it ef590dc4579a   /bin/bash
+# ef590dc4579a is the ID of the docker container 
+
+# after you are login to the container 
+# run 
+# mongosh
+
+
 # https://www.mongodb.com/languages/python
 
 # mongosh mongo shell
