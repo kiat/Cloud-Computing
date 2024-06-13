@@ -1,10 +1,12 @@
 # Docker commands to install Cassandra
-
 # https://cassandra.apache.org/_/quickstart.html
 
 # docker network create cassandra
 # docker run --rm -d --name cassandra --hostname cassandra --network cassandra cassandra
 
+=======
+# do the following command. 
+# docker run -d -p 9042:9042 cassandra
 
 # If you want to login to the container.
 # docker exec -it cassandra /bin/bash

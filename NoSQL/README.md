@@ -15,6 +15,13 @@ https://github.com/voldemort/voldemort/blob/master/example/shell/example-command
 
 https://github.com/voldemort/voldemort/blob/master/example/java/voldemort/examples/ClientExample.java
 
+# Redis 
+
+https://redis.io/ 
+
+https://redis.io/docs/install/install-redis/
+
+https://redis.io/docs/install/install-redis/install-redis-on-mac-os/
 
 
 # MongoDB
