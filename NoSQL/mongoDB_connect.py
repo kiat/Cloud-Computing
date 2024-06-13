@@ -94,7 +94,7 @@ if __name__ == "__main__":
         },
         {
           "course_id": "CS328",
-          "title": "Data Structutes",
+          "title": "Data Structures",
           "unit": 4,
           "tuition": 1150,
           "sections": [

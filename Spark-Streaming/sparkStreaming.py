@@ -50,7 +50,7 @@ tags_totals = hashtags.updateStateByKey(aggregate_count)\
                      .transform(lambda rdd: rdd.sortBy(lambda x: x[1], ascending=False))
 
 # # Debuging code 
-tags_totals.pprint(2)
+tags_totals.pprint(10)
 
 # start the streaming computation
 ssc.start()

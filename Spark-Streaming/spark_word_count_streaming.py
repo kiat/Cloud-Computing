@@ -43,7 +43,7 @@ result = word_count.updateStateByKey(aggregate_count)\
                      .transform(lambda rdd: rdd.sortBy(lambda x: x[1], ascending=False))
 
 # printing 
-result.pprint(2)
+result.pprint(5)
 
 # start the streaming computation
 ssc.start()
