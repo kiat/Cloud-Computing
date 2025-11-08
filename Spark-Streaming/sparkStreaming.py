@@ -32,12 +32,15 @@ dataStream = ssc.socketTextStream("localhost", 9009)
 
 
 # split each tweet into words
-words = dataStream.window(300, 2).flatMap(lambda line: line.split())
+words = dataStream.window(20, 4).flatMap(lambda line: line.split())\
+        .map(lambda x: (x.lower(), 1)).reduceByKey(add)
 
-hashtags = words.filter(lambda w: "#" in str(w))\
-                .filter(lambda w: not (('http' in w) or ('\\u' in w) or (len(w)==1) ))\
-                .map(lambda x: (x.lower(), 1))\
-                .reduceByKey(add)
+words.pprint(5)
+
+# hashtags = words.filter(lambda w: "#" in str(w))\
+#                 .filter(lambda w: not (('http' in w) or ('\\u' in w) or (len(w)==1) ))\
+#                 .map(lambda x: (x.lower(), 1))\
+#                 .reduceByKey(add)
 
 # word_count = words.filter(lambda w: "#" in str(w)).map(lambda x: (x.lower(), 1))\
 #     .reduceByKey(add).transform(lambda rdd: rdd.filter(lambda x: x[1]> 2) )
@@ -46,11 +49,11 @@ hashtags = words.filter(lambda w: "#" in str(w))\
 # hashtags.pprint(20)
 
 # adding the count of each hashtag to its last count
-tags_totals = hashtags.updateStateByKey(aggregate_count)\
-                     .transform(lambda rdd: rdd.sortBy(lambda x: x[1], ascending=False))
+# tags_totals = hashtags.updateStateByKey(aggregate_count)\
+#                      .transform(lambda rdd: rdd.sortBy(lambda x: x[1], ascending=False))
 
 # # Debuging code 
-tags_totals.pprint(10)
+# tags_totals.pprint(10)
 
 # start the streaming computation
 ssc.start()
