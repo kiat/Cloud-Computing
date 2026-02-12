@@ -21,12 +21,18 @@ Prerequisite:
 
 
 ### Input data set 
-* taxi-data-sorted-small.csv (for the small dataset)
+* taxi-data-sorted-small.csv.bz2 (for the small dataset)
+
+  
 ```
-https://storage.googleapis.com/cs378/taxi-data-sorted-small.csv
+https://www.cs.utexas.edu/~kiat/datasets/taxi-data-sorted-small.csv.bz2
 ```
 
-Download https://storage.googleapis.com/cs378/taxi-data-sorted-small.csv
+```
+wget https://www.cs.utexas.edu/~kiat/datasets/taxi-data-sorted-small.csv.bz2
+```
+
+
 
 ## Running
 
