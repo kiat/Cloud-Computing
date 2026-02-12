@@ -1,30 +1,29 @@
-# Running on Laptop     ####
+# How to Compile and Run ####
 
 Prerequisite:
 
-- Apache Maven
-
-- Java JDK 1.6 or higher
+* Apache Maven
+* Java JDK 1.6 or higher
 
 The java main class is:
 
-edu.cs.utexas.HadoopEx.KMeansDriver 
+edu.cs.utexas.HadoopEx.EMDriver 
 
 Input file:  points.txt
 
-Specify your own Output directory like 
+Specify your own Output directory like "output"
 
 
-# Create a JAR Using Maven 
+## Create a JAR Using Maven 
 
 To compile the project and create a single jar file with all dependencies: 
 	
 	```mvn clean package```
 
 
-# Running:
+## Running:
 
-```KMeansDriver input output```
+```EMDriver input output```
 
 
 ```java -jar target/GMM-example-0.1-SNAPSHOT-jar-with-dependencies.jar points.txt output ```
