@@ -17,6 +17,17 @@
 #   put key value
 #   get key
 
+# What is simplified compared to full Chord?
+# Real Chord systems also include:
+# - finger tables
+# - predecessor pointers
+# - stabilization protocol
+# - failure recovery
+# - replication
+
+
+
+
 import socket
 import threading
 import hashlib
