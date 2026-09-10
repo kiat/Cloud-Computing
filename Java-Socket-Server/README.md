@@ -1,10 +1,5 @@
-# Please add your team members' names here. 
-
 
 # Socket Server in Java 
-
-
-
 
 # How to compile the project
 
