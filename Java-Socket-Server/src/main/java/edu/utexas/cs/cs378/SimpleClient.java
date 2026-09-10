@@ -47,8 +47,15 @@ public class SimpleClient {
 
                 System.out.println("Server says: " + response);
 
-                // set the flag to be able to exit.
-                flag = message;
+//                // set the flag to be able to exit.
+//                flag = message;
+
+                // Check for client disconnect
+                if (message.equalsIgnoreCase("exit")) {
+                    outputSocket.println("Goodbye! Disconnecting...");
+                    socket.close();
+                    System.exit(0);
+                }
             }
         } catch (IOException e) {
             e.printStackTrace();
