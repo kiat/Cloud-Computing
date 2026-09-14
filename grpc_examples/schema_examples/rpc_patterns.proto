@@ -1,0 +1,14 @@
+// these RPCs have no server implementation here.
+syntax = "proto3";
+
+package teaching.patterns;
+
+message Req { string payload = 1; }
+message Res { string payload = 1; }
+
+service InteractionPatterns {
+  rpc Lookup(Req)        returns (Res);
+  rpc List(Req)          returns (stream Res);
+  rpc Upload(stream Req) returns (Res);
+  rpc Chat(stream Req)   returns (stream Res);
+}

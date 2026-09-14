@@ -1,0 +1,26 @@
+// catalog.proto
+
+syntax = "proto3";
+package catalog;
+
+option java_package = "edu.utexas.cs";
+option java_multiple_files = true;
+
+service CourseService {
+
+  rpc GetCourse(CourseQuery) 
+      returns (CourseInfo);
+
+  rpc ListCourses(CourseQuery) 
+      returns (stream CourseInfo);
+}
+
+
+message CourseQuery {
+  string course_id = 1;
+}
+
+message CourseInfo {
+  string title = 1;
+  int32 credits = 2;
+}
