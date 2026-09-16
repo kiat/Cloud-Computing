@@ -1,0 +1,120 @@
+syntax = "proto3";
+
+package battleship;
+
+// ---------------------------------------------------------------------------
+// Battleship gRPC service
+//
+// Flow:
+//   1. Client calls Connect()      -> gets player_id + game_id (matchmaking)
+//   2. Client calls PlaceShips()   -> sends 4 ship placements
+//   3. Client calls WatchGame()    -> opens a server-streaming channel that
+//                                      pushes turn notifications / shot
+//                                      results / game-over events in real time
+//   4. Client calls Fire()         -> attacks a cell on the opponent's board
+//                                      (only valid on the caller's turn)
+// ---------------------------------------------------------------------------
+service BattleshipService {
+  rpc Connect(ConnectRequest) returns (ConnectResponse);
+  rpc PlaceShips(PlaceShipsRequest) returns (PlaceShipsResponse);
+  rpc Fire(FireRequest) returns (FireResponse);
+  rpc WatchGame(WatchRequest) returns (stream GameUpdate);
+}
+
+// ---------------------------------------------------------------------------
+// Connect
+// ---------------------------------------------------------------------------
+message ConnectRequest {
+  string player_name = 1;
+}
+
+message ConnectResponse {
+  bool success = 1;
+  string message = 2;
+  string player_id = 3;
+  string game_id = 4;
+  int32 player_number = 5;   // 1 or 2
+  int32 board_size = 6;      // 50
+  repeated int32 required_ship_sizes = 7; // e.g. [5, 4, 3, 2]
+}
+
+// ---------------------------------------------------------------------------
+// PlaceShips
+// ---------------------------------------------------------------------------
+message ShipPlacement {
+  int32 row = 1;         // top-left / starting cell row (0-49)
+  int32 col = 2;         // starting cell column (0-49)
+  int32 size = 3;        // length of the ship, 1-5
+  bool horizontal = 4;   // true = extends across columns, false = down rows
+}
+
+message PlaceShipsRequest {
+  string player_id = 1;
+  string game_id = 2;
+  repeated ShipPlacement ships = 3; // must contain exactly the required ships
+}
+
+message PlaceShipsResponse {
+  bool success = 1;
+  string message = 2;
+}
+
+// ---------------------------------------------------------------------------
+// Fire
+// ---------------------------------------------------------------------------
+enum ShotResult {
+  UNKNOWN = 0;
+  MISS = 1;
+  HIT = 2;
+  SUNK = 3;
+  WIN = 4;
+  INVALID = 5;
+}
+
+message FireRequest {
+  string player_id = 1;
+  string game_id = 2;
+  int32 row = 3;
+  int32 col = 4;
+}
+
+message FireResponse {
+  bool success = 1;
+  string message = 2;
+  ShotResult result = 3;
+}
+
+// ---------------------------------------------------------------------------
+// WatchGame (server-streaming updates)
+// ---------------------------------------------------------------------------
+message WatchRequest {
+  string player_id = 1;
+  string game_id = 2;
+}
+
+message GameUpdate {
+  enum UpdateType {
+    UNKNOWN = 0;
+    WAITING_FOR_OPPONENT = 1;
+    OPPONENT_JOINED = 2;
+    WAITING_FOR_PLACEMENT = 3;
+    GAME_START = 4;
+    YOUR_TURN = 5;
+    OPPONENT_TURN = 6;
+    SHOT_RESULT = 7;   // informs a player of the outcome of a shot (either side)
+    GAME_OVER = 8;
+    OPPONENT_DISCONNECTED = 9;
+  }
+
+  UpdateType type = 1;
+  string message = 2;
+
+  // Populated for SHOT_RESULT updates
+  bool shot_by_me = 3;     // true if the receiving player fired this shot
+  int32 row = 4;
+  int32 col = 5;
+  ShotResult result = 6;
+
+  // Populated for GAME_OVER
+  bool you_win = 7;
+}
