@@ -124,6 +124,15 @@ Student student = Student.newBuilder()
 
 The generated class provides the methods needed to construct, serialize, and parse the message.
 
+To serialize the object student to a byte Array in java we can do: 
+
+```java
+
+// Serialize the Student object
+        byte[] data = student.toByteArray();
+```
+
+
 ---
 
 # 4. Generate C++ Code
