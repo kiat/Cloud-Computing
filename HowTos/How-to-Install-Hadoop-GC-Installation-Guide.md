@@ -176,3 +176,51 @@ To see less log outputs use the following environment variable before your hadoo
 HADOOP_ROOT_LOGGER=WARN hadoop jar YOURJARFILE ARGUMENTS
 
 ```
+
+# Finding Participating Worker Nodes in Hadoop HDFS
+
+To find the participating worker nodes (DataNodes) in your Hadoop HDFS cluster using the terminal, use the **`hdfs dfsadmin -report`** command.
+
+---
+
+# Other Useful Info 
+
+## Cluster & Node Reports
+
+Use these commands to get detailed metrics regarding storage capacity, usage, and node health status:
+
+*   **Detailed Cluster Summary:**
+    ```bash
+    hdfs dfsadmin -report
+    ```
+    *Displays a comprehensive summary of the cluster, followed by a detailed, line-by-line report for every single registered worker node.*
+
+*   **Live Nodes Only:**
+    ```bash
+    hdfs dfsadmin -report -live
+    ```
+    *Filters out dead or decommissioning nodes to only display currently functioning worker nodes.*
+
+*   **Dead Nodes Only:**
+    ```bash
+    hdfs dfsadmin -report -dead
+    ```
+    *Quickly identifies which worker nodes have crashed or lost connection with the NameNode.*
+
+---
+
+## 2. Worker Node Infrastructure & Topology
+
+Use these commands if you need a clean list of hostnames or want to inspect the cluster's network layout:
+
+*   **Network Rack Topology:**
+    ```bash
+    hdfs dfsadmin -printTopology
+    ```
+    *Prints a tree structure of your network topology, showing exactly which worker nodes belong to which rack.*
+
+*   **YARN Compute Nodes:**
+    ```bash
+    yarn node -list -all
+    ```
+    *Lists the worker nodes handling the computation (NodeManagers) rather than just storage. Useful if you are running MapReduce or Spark jobs.*
