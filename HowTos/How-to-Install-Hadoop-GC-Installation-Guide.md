@@ -167,6 +167,12 @@ By default, GCP blocks external access to these ports. To view them from your lo
 * **Source filter:** `0.0.0.0/0` (or restrict to your specific office/home IP address for enhanced security).
 * **Protocols and ports:** Select **TCP** and specify ports: `9870, 8088, 19888, 9864`.
 
+Run the following command to see all listening TCP and UDP ports:
+
+```
+sudo ss -tunlp
+```
+
 
 # Log outputs when you run hadoop 
 
@@ -181,7 +187,6 @@ HADOOP_ROOT_LOGGER=WARN hadoop jar YOURJARFILE ARGUMENTS
 
 To find the participating worker nodes (DataNodes) in your Hadoop HDFS cluster using the terminal, use the **`hdfs dfsadmin -report`** command.
 
----
 
 # Other Useful Info 
 
@@ -207,9 +212,8 @@ Use these commands to get detailed metrics regarding storage capacity, usage, an
     ```
     *Quickly identifies which worker nodes have crashed or lost connection with the NameNode.*
 
----
 
-## 2. Worker Node Infrastructure & Topology
+## Worker Node Infrastructure & Topology
 
 Use these commands if you need a clean list of hostnames or want to inspect the cluster's network layout:
 
