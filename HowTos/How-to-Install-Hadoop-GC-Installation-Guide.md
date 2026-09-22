@@ -167,6 +167,12 @@ By default, GCP blocks external access to these ports. To view them from your lo
 * **Source filter:** `0.0.0.0/0` (or restrict to your specific office/home IP address for enhanced security).
 * **Protocols and ports:** Select **TCP** and specify ports: `9870, 8088, 19888, 9864`.
 
+Run the following command to see all listening TCP and UDP ports:
+
+```
+sudo ss -tunlp
+```
+
 
 # Log outputs when you run hadoop 
 
