@@ -106,7 +106,14 @@ If you have more arguments like you have an intermediate folder then provide tha
 * Go to EC2 and create a new security group 
 * Name it allOpen 
 * Add an Inbound Rule that lets all inbound traffic TCP port traffics from 0 to 65535 to go through for your IP address or for all IPs 0.0.0.0/0 
-* **Security Note:** It is recommended to open ports only for specific IP ranges and not for all ports because of the security reasons. 
+* Add your Master Node to this Security Group 
+* Then you can use your .pem file to SSH to the Master Node. 
+
+
+
+
+
+**Security Note:** It is recommended to open ports only for specific IP ranges and not for all ports because of the security reasons. 
 For example, you can add a rul the allows all IP ranges of UT Austin Campus. 
 
 * 128.62.0.0/16 — 65,536 IP addresses
@@ -159,7 +166,6 @@ aws ec2 authorize-security-group-ingress \
 
 ```
 
-Then you can use your .pem file to SSH to the Master Node. 
 
 
 
