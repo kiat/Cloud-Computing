@@ -114,7 +114,10 @@ If you have more arguments like you have an intermediate folder then provide tha
 
 
 **Security Note:** It is recommended to open ports only for specific IP ranges and not for all ports because of the security reasons. 
-For example, you can add a rul the allows all IP ranges of UT Austin Campus. 
+You can open only your own IP address or for a range of IPs. 
+
+
+For example, you can add a inbound rule the allows all IP ranges of UT Austin Campus. 
 
 * 128.62.0.0/16 — 65,536 IP addresses
 * 128.83.0.0/16 — 65,536 IP addresses
