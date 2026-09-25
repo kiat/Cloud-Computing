@@ -2,8 +2,7 @@
 # AWS EMR on AWSAcademy Lerner Lab 
 
 
-## AWSAcademy Lerner Lab Startup 
-
+## AWSAcademy Lerner Lab  
 
 At the top of these instructions, choose  Start Lab.
 
@@ -12,7 +11,8 @@ At the top of these instructions, choose  Start Lab.
 * **Tip:** To refresh the session length at any time, choose  Start Lab again before the timer reaches 0:00.
 * Before you continue, wait until the circle icon to the right of the AWS  link in the upper-left corner turns green.
 
-**Note:** This Lab environment will run for 4 hours only and then it terminates. 
+**Note:** This Lab environment will run for 4 hours only and then it terminates. When terminated all Machines and Clusters will terminate but your data on S3 is 
+stored safely. 
 
 ## Launching an Amazon EMR cluster
 In this task, you will launch an EMR cluster with Hive installed.
