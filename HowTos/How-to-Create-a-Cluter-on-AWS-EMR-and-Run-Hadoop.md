@@ -186,7 +186,7 @@ Then you can use your .pem file to SSH to the Master Node.
 * SSH to your Master Node of the Cluster or any Machines on EC2 
 * scp your file to the master node or directly download them to the master node using "wget" command 
 
-* Then use aws cli to copy the file to your S3 bucket 
+* Then on the master Node terminal, use aws cli to copy the file to your S3 bucket 
 
 ```
 aws s3 cp LARGEFILE.bz2   s3://YourBucketName/
