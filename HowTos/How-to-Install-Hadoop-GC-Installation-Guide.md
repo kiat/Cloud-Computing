@@ -140,9 +140,8 @@ You can also leverage GCP's automation:
 
 4. **Configure Core, HDFS, MapReduce and YARN Settings:**
 
-   > **✏️ FIXED / EXPANDED:** The original guide only said to "update `core-site.xml` and `hdfs-site.xml`" without showing the actual contents, and didn't mention `mapred-site.xml` or `yarn-site.xml` at all. **Without these two files, YARN will not run and MapReduce jobs cannot execute** — only `hdfs namenode -format` and HDFS itself would work. All four files below are required for the guide's own Phase 4 (`start-yarn.sh`, running the `pi` job) to actually succeed.
 
-   On `master`, edit the following files under `/usr/local/hadoop/etc/hadoop/`:
+On `master`, edit the following files under `/usr/local/hadoop/etc/hadoop/`:
 
    **`core-site.xml`** — tells every node where the NameNode lives:
    ```xml
