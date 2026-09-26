@@ -22,19 +22,21 @@ sudo chmod 700 /home/hadoop/.ssh
 sudo chmod 600 /home/hadoop/.ssh/authorized_keys
 ```
 
-### Step 2: Switch to the Hadoop User and Install Java 21
+### Step 2: Switch to the Hadoop User and Install Java 17
+> **✏️ FIXED:** The original guide installed **Java 21**. Per the official [Apache Hadoop 3.5.0 release notes](https://hadoop.apache.org/docs/r3.5.0), Java 17 is **required** on the server side (NameNode, DataNode, ResourceManager, NodeManager) — Java 21 is only supported on the *client* side. Since `master` runs the NameNode/ResourceManager and `worker1`/`worker2` run DataNode/NodeManager daemons, **all three nodes need Java 17**, not Java 21.
+
 Switch to your new `hadoop` user for all subsequent installations:
 ```bash
 sudo su - hadoop
 ```
 
-Install OpenJDK 21 and export `JAVA_HOME`:
+Install OpenJDK 17 and export `JAVA_HOME`:
 ```bash
 sudo apt update
-sudo apt install openjdk-21-jdk -y
+sudo apt install openjdk-17-jdk -y
 
 # Set JAVA_HOME in bash profile
-echo "export JAVA_HOME=/usr/lib/jvm/java-21-openjdk-amd64" >> ~/.bashrc
+echo "export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64" >> ~/.bashrc
 echo "export PATH=\$PATH:\$JAVA_HOME/bin" >> ~/.bashrc
 source ~/.bashrc
 ```
@@ -48,6 +50,8 @@ cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
 chmod 0600 ~/.ssh/authorized_keys
 ```
 *Verification:* Run `ssh localhost` to confirm it logs in without a password prompt, then type `exit`.
+
+> **🔧 ADDED NOTE:** This only sets up passwordless SSH for the `hadoop` user *to itself* (`localhost`). Hadoop's `start-dfs.sh`/`start-yarn.sh` scripts also need the `master` node to SSH into `worker1` and `worker2` without a password to launch their daemons remotely. Because this key is generated *before* the worker VMs exist, that part can't be verified yet — see the new **"Verify Passwordless SSH to Workers"** step added in Phase 3, after the worker nodes are created.
 
 ### Step 4: Download and Extract Apache Hadoop 3.5.0
 Download the latest Apache Hadoop 3.5.0 release, extract it, and place it under `/usr/local/hadoop`:
@@ -73,8 +77,10 @@ source ~/.bashrc
 
 Explicitly configure `JAVA_HOME` inside Hadoop's environment script (`hadoop-env.sh`):
 ```bash
-echo "export JAVA_HOME=/usr/lib/jvm/java-21-openjdk-amd64" >> /usr/local/hadoop/etc/hadoop/hadoop-env.sh
+echo "export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64" >> /usr/local/hadoop/etc/hadoop/hadoop-env.sh
 ```
+> **✏️ FIXED:** Updated to `java-17-openjdk-amd64` to match the Java 17 install in Step 2.
+
 *Verification:* Run `hadoop version` to verify the installation runs cleanly.
 
 ---
@@ -113,15 +119,118 @@ You can also leverage GCP's automation:
    10.x.x.z worker2
    ```
 
-2. **Define Workers:**
+2. **🔧 ADDED STEP — Verify Passwordless SSH from Master to Workers:**
+   Because `worker1` and `worker2` were created from a clone/image of `master` (Phase 2), they already contain the identical `authorized_keys` file — meaning `master`'s public key is already trusted by both workers. Confirm this now, as the `hadoop` user on `master`:
+   ```bash
+   ssh worker1 exit
+   ssh worker2 exit
+   ```
+   Each should log in with **no password prompt**. If either one *does* prompt for a password (for example, if you used Method 2 with a fresh OS template), copy the key manually:
+   ```bash
+   ssh-copy-id hadoop@worker1
+   ssh-copy-id hadoop@worker2
+   ```
+   This step is required — `start-dfs.sh` and `start-yarn.sh` (Phase 4) use SSH under the hood to launch the DataNode/NodeManager daemons on `worker1` and `worker2`, and will silently fail to start them if passwordless SSH isn't working.
+
+3. **Define Workers:**
    On the `master` node, edit `/usr/local/hadoop/etc/hadoop/workers` and list your worker nodes:
    ```text
    worker1
    worker2
    ```
+   > **🔧 ADDED NOTE:** This file is only read by the node that runs `start-dfs.sh`/`start-yarn.sh` (i.e. `master`), so it technically only needs to exist there — but it doesn't hurt to keep it in sync on all nodes via the `scp` step below.
 
-3. **Configure Core and HDFS Settings:**
-   Update `core-site.xml` and `hdfs-site.xml` inside `/usr/local/hadoop/etc/hadoop/` to designate `master` as the NameNode/FS default. Then, use `scp` to mirror these configuration changes over to `worker1` and `worker2`.
+4. **Configure Core, HDFS, MapReduce and YARN Settings:**
+
+   > **✏️ FIXED / EXPANDED:** The original guide only said to "update `core-site.xml` and `hdfs-site.xml`" without showing the actual contents, and didn't mention `mapred-site.xml` or `yarn-site.xml` at all. **Without these two files, YARN will not run and MapReduce jobs cannot execute** — only `hdfs namenode -format` and HDFS itself would work. All four files below are required for the guide's own Phase 4 (`start-yarn.sh`, running the `pi` job) to actually succeed.
+
+   On `master`, edit the following files under `/usr/local/hadoop/etc/hadoop/`:
+
+   **`core-site.xml`** — tells every node where the NameNode lives:
+   ```xml
+   <configuration>
+       <property>
+           <name>fs.defaultFS</name>
+           <value>hdfs://master:9000</value>
+       </property>
+   </configuration>
+   ```
+
+   **`hdfs-site.xml`** — sets replication (2, to match your 2 worker/DataNode setup) and storage directories:
+   ```xml
+   <configuration>
+       <property>
+           <name>dfs.replication</name>
+           <value>2</value>
+       </property>
+       <property>
+           <name>dfs.namenode.name.dir</name>
+           <value>file:///usr/local/hadoop/hdfs/namenode</value>
+       </property>
+       <property>
+           <name>dfs.datanode.data.dir</name>
+           <value>file:///usr/local/hadoop/hdfs/datanode</value>
+       </property>
+   </configuration>
+   ```
+   Create the matching storage directories. The NameNode directory is only needed on `master`; the DataNode directory is only needed on `worker1` and `worker2`:
+   ```bash
+   # On master:
+   mkdir -p /usr/local/hadoop/hdfs/namenode
+
+   # On worker1 and worker2:
+   mkdir -p /usr/local/hadoop/hdfs/datanode
+   ```
+
+   **`mapred-site.xml`** *(🔧 ADDED — missing from the original guide)* — tells MapReduce to run on YARN instead of the default local mode:
+   ```xml
+   <configuration>
+       <property>
+           <name>mapreduce.framework.name</name>
+           <value>yarn</value>
+       </property>
+   </configuration>
+   ```
+
+   **`yarn-site.xml`** *(🔧 ADDED — missing from the original guide)* — tells NodeManagers where the ResourceManager is and enables the shuffle service MapReduce needs:
+   ```xml
+   <configuration>
+       <property>
+           <name>yarn.resourcemanager.hostname</name>
+           <value>master</value>
+       </property>
+       <property>
+           <name>yarn.nodemanager.aux-services</name>
+           <value>mapreduce_shuffle</value>
+       </property>
+   </configuration>
+   ```
+
+   Then, use `scp` to mirror these configuration changes over to `worker1` and `worker2` (run from `master`, as the `hadoop` user):
+   ```bash
+   for node in worker1 worker2; do
+     scp /usr/local/hadoop/etc/hadoop/core-site.xml   hadoop@$node:/usr/local/hadoop/etc/hadoop/core-site.xml
+     scp /usr/local/hadoop/etc/hadoop/hdfs-site.xml   hadoop@$node:/usr/local/hadoop/etc/hadoop/hdfs-site.xml
+     scp /usr/local/hadoop/etc/hadoop/mapred-site.xml hadoop@$node:/usr/local/hadoop/etc/hadoop/mapred-site.xml
+     scp /usr/local/hadoop/etc/hadoop/yarn-site.xml   hadoop@$node:/usr/local/hadoop/etc/hadoop/yarn-site.xml
+     scp /usr/local/hadoop/etc/hadoop/workers         hadoop@$node:/usr/local/hadoop/etc/hadoop/workers
+   done
+   ```
+
+5. **🔧 ADDED STEP — Open Firewall Ports for Internal Cluster Communication:**
+   The "Web UI Ports" firewall section later in this guide only opens ports for **external browser access** to the monitoring dashboards. It does **not** cover the ports the nodes use to talk to *each other* — without these, the DataNodes can't register with the NameNode and the NodeManagers can't register with the ResourceManager, even though each daemon starts up individually without error.
+
+   | Purpose | Port |
+   |---|---|
+   | NameNode RPC (`fs.defaultFS`) | `9000` |
+   | DataNode data transfer | `9866` |
+   | DataNode IPC | `9867` |
+   | YARN ResourceManager (scheduler/tracker/RM/admin) | `8030`–`8033` |
+
+   If all 3 VMs are in GCP's **default** auto-mode VPC network, this traffic is usually already allowed by the built-in `default-allow-internal` firewall rule (it permits all internal TCP/UDP traffic between instances in that network). If you're using a **custom VPC network**, or want to be explicit, create a rule the same way as the Web UI ports below:
+   * **Targets:** your cluster's instance tags (e.g. `hadoop-cluster`)
+   * **Source filter:** the VPC's internal IP range (e.g. `10.128.0.0/9`), or your cluster's own tag
+   * **Protocols and ports:** TCP `9000, 9866, 9867, 8030-8033`
 
 ---
 
@@ -136,13 +245,14 @@ You can also leverage GCP's automation:
    ```bash
    hdfs namenode -format
    ```
+   > **🔧 ADDED CAUTION:** Only run this **once**, before starting HDFS for the first time. Re-running it later (e.g. after you already have data) generates a new cluster ID and will cause the DataNodes on `worker1`/`worker2` to reject the NameNode and fail to register, since their existing storage still references the old cluster ID.
 
 3. Start HDFS and YARN daemons:
    ```bash
    start-dfs.sh
    start-yarn.sh
    ```
-   *Verification:* Run the `jps` command on master to ensure `NameNode`, `ResourceManager`, `SecondaryNameNode`, etc., are running.
+   *Verification:* Run the `jps` command on master to ensure `NameNode`, `ResourceManager`, `SecondaryNameNode`, etc., are running. Run `jps` on `worker1`/`worker2` to confirm `DataNode` and `NodeManager` are running there too, and run `hdfs dfsadmin -report` on master to confirm both workers show up as live nodes (see "Cluster & Node Reports" below).
 
 4. Run the MapReduce Pi estimation test job:
    ```bash
@@ -153,7 +263,9 @@ You can also leverage GCP's automation:
 
 ## Hadoop 3.5 Web UI Ports & GCE Firewall Configuration
 
-To monitor your Hadoop cluster health, jobs, and file storage via your browser, Hadoop 3.5 exposes several standard Web User Interfaces. 
+To monitor your Hadoop cluster health, jobs, and file storage via your browser, Hadoop 3.5 exposes several standard Web User Interfaces.
+
+> **🔧 ADDED NOTE:** These ports are for viewing the dashboards from your *own browser* (external access). They're separate from the internal node-to-node ports opened in the new Phase 3, Step 5 above — you need both for a fully working, monitorable cluster.
 
 ### Default Hadoop 3.5 Web UI Ports:
 * **NameNode Web UI (HDFS Status & Files):** Port `9870` (URL: `http://<master-external-ip>:9870`)
