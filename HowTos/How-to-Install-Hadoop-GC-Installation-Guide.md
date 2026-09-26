@@ -179,7 +179,8 @@ On `master`, edit the following files under `/usr/local/hadoop/etc/hadoop/`:
    mkdir -p /usr/local/hadoop/hdfs/datanode
    ```
 
-   **`mapred-site.xml`** *(🔧 ADDED — missing from the original guide)* — tells MapReduce to run on YARN instead of the default local mode:
+   **`mapred-site.xml`**  Tells MapReduce to run on YARN instead of the default local mode:
+   
    ```xml
    <configuration>
        <property>
@@ -189,7 +190,7 @@ On `master`, edit the following files under `/usr/local/hadoop/etc/hadoop/`:
    </configuration>
    ```
 
-   **`yarn-site.xml`** *(🔧 ADDED — missing from the original guide)* — tells NodeManagers where the ResourceManager is and enables the shuffle service MapReduce needs:
+   **`yarn-site.xml`** Tells NodeManagers where the ResourceManager is and enables the shuffle service MapReduce needs:
    ```xml
    <configuration>
        <property>
@@ -214,8 +215,9 @@ On `master`, edit the following files under `/usr/local/hadoop/etc/hadoop/`:
    done
    ```
 
-5. **🔧 ADDED STEP — Open Firewall Ports for Internal Cluster Communication:**
-   The "Web UI Ports" firewall section later in this guide only opens ports for **external browser access** to the monitoring dashboards. It does **not** cover the ports the nodes use to talk to *each other* — without these, the DataNodes can't register with the NameNode and the NodeManagers can't register with the ResourceManager, even though each daemon starts up individually without error.
+5. **Open Firewall Ports for Internal Cluster Communication:**
+
+The "Web UI Ports" firewall section later in this guide only opens ports for **external browser access** to the monitoring dashboards. It does **not** cover the ports the nodes use to talk to *each other* — without these, the DataNodes can't register with the NameNode and the NodeManagers can't register with the ResourceManager, even though each daemon starts up individually without error.
 
    | Purpose | Port |
    |---|---|
@@ -242,7 +244,7 @@ On `master`, edit the following files under `/usr/local/hadoop/etc/hadoop/`:
    ```bash
    hdfs namenode -format
    ```
-   > **🔧 ADDED CAUTION:** Only run this **once**, before starting HDFS for the first time. Re-running it later (e.g. after you already have data) generates a new cluster ID and will cause the DataNodes on `worker1`/`worker2` to reject the NameNode and fail to register, since their existing storage still references the old cluster ID.
+   > Before starting HDFS for the first time. Re-running it later (e.g. after you already have data) generates a new cluster ID and will cause the DataNodes on `worker1`/`worker2` to reject the NameNode and fail to register, since their existing storage still references the old cluster ID.
 
 3. Start HDFS and YARN daemons:
    ```bash
