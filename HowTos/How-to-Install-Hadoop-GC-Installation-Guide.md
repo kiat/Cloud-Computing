@@ -22,21 +22,20 @@ sudo chmod 700 /home/hadoop/.ssh
 sudo chmod 600 /home/hadoop/.ssh/authorized_keys
 ```
 
-### Step 2: Switch to the Hadoop User and Install Java 17
-> **✏️ FIXED:** The original guide installed **Java 21**. Per the official [Apache Hadoop 3.5.0 release notes](https://hadoop.apache.org/docs/r3.5.0), Java 17 is **required** on the server side (NameNode, DataNode, ResourceManager, NodeManager) — Java 21 is only supported on the *client* side. Since `master` runs the NameNode/ResourceManager and `worker1`/`worker2` run DataNode/NodeManager daemons, **all three nodes need Java 17**, not Java 21.
+### Step 2: Switch to the Hadoop User and Install Java JDK 21
 
 Switch to your new `hadoop` user for all subsequent installations:
 ```bash
 sudo su - hadoop
 ```
 
-Install OpenJDK 17 and export `JAVA_HOME`:
+Install OpenJDK 21 and export `JAVA_HOME`:
 ```bash
 sudo apt update
-sudo apt install openjdk-17-jdk -y
+sudo apt install openjdk-21-jdk -y
 
 # Set JAVA_HOME in bash profile
-echo "export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64" >> ~/.bashrc
+echo "export JAVA_HOME=/usr/lib/jvm/java-21-openjdk-amd64" >> ~/.bashrc
 echo "export PATH=\$PATH:\$JAVA_HOME/bin" >> ~/.bashrc
 source ~/.bashrc
 ```
@@ -77,9 +76,8 @@ source ~/.bashrc
 
 Explicitly configure `JAVA_HOME` inside Hadoop's environment script (`hadoop-env.sh`):
 ```bash
-echo "export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64" >> /usr/local/hadoop/etc/hadoop/hadoop-env.sh
+echo "export JAVA_HOME=/usr/lib/jvm/java-21-openjdk-amd64" >> /usr/local/hadoop/etc/hadoop/hadoop-env.sh
 ```
-> **✏️ FIXED:** Updated to `java-17-openjdk-amd64` to match the Java 17 install in Step 2.
 
 *Verification:* Run `hadoop version` to verify the installation runs cleanly.
 
