@@ -50,7 +50,7 @@ chmod 0600 ~/.ssh/authorized_keys
 ```
 *Verification:* Run `ssh localhost` to confirm it logs in without a password prompt, then type `exit`.
 
-> **🔧 ADDED NOTE:** This only sets up passwordless SSH for the `hadoop` user *to itself* (`localhost`). Hadoop's `start-dfs.sh`/`start-yarn.sh` scripts also need the `master` node to SSH into `worker1` and `worker2` without a password to launch their daemons remotely. Because this key is generated *before* the worker VMs exist, that part can't be verified yet — see the new **"Verify Passwordless SSH to Workers"** step added in Phase 3, after the worker nodes are created.
+> **NOTE:** This only sets up passwordless SSH for the `hadoop` user *to itself* (`localhost`). Hadoop's `start-dfs.sh`/`start-yarn.sh` scripts also need the `master` node to SSH into `worker1` and `worker2` without a password to launch their daemons remotely. Because this key is generated *before* the worker VMs exist, that part can't be verified yet — see the new **"Verify Passwordless SSH to Workers"** step added in Phase 3, after the worker nodes are created.
 
 ### Step 4: Download and Extract Apache Hadoop 3.5.0
 Download the latest Apache Hadoop 3.5.0 release, extract it, and place it under `/usr/local/hadoop`:
