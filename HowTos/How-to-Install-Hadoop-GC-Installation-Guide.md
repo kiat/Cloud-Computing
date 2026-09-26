@@ -136,7 +136,7 @@ You can also leverage GCP's automation:
    worker1
    worker2
    ```
-   > **🔧 ADDED NOTE:** This file is only read by the node that runs `start-dfs.sh`/`start-yarn.sh` (i.e. `master`), so it technically only needs to exist there — but it doesn't hurt to keep it in sync on all nodes via the `scp` step below.
+   > **NOTE:** This file is only read by the node that runs `start-dfs.sh`/`start-yarn.sh` (i.e. `master`), so it technically only needs to exist there — but it doesn't hurt to keep it in sync on all nodes via the `scp` step below.
 
 4. **Configure Core, HDFS, MapReduce and YARN Settings:**
 
