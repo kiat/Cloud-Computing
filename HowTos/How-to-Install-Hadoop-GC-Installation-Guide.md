@@ -117,7 +117,7 @@ You can also leverage GCP's automation:
    10.x.x.z worker2
    ```
 
-2. **🔧 ADDED STEP — Verify Passwordless SSH from Master to Workers:**
+2. **Verify Passwordless SSH from Master to Workers:**
    Because `worker1` and `worker2` were created from a clone/image of `master` (Phase 2), they already contain the identical `authorized_keys` file — meaning `master`'s public key is already trusted by both workers. Confirm this now, as the `hadoop` user on `master`:
    ```bash
    ssh worker1 exit
