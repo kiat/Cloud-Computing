@@ -271,7 +271,6 @@ The "Web UI Ports" firewall section later in this guide only opens ports for **e
 
 To monitor your Hadoop cluster health, jobs, and file storage via your browser, Hadoop 3.5 exposes several standard Web User Interfaces.
 
-> **🔧 ADDED NOTE:** These ports are for viewing the dashboards from your *own browser* (external access). They're separate from the internal node-to-node ports opened in the new Phase 3, Step 5 above — you need both for a fully working, monitorable cluster.
 
 ### Default Hadoop 3.5 Web UI Ports:
 * **NameNode Web UI (HDFS Status & Files):** Port `9870` (URL: `http://<master-external-ip>:9870`)
