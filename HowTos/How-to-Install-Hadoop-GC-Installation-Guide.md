@@ -305,8 +305,16 @@ HADOOP_ROOT_LOGGER=WARN hadoop jar YOURJARFILE ARGUMENTS
 
 To find the participating worker nodes (DataNodes) in your Hadoop HDFS cluster using the terminal, use the **`hdfs dfsadmin -report`** command.
 
+# Verification
 
-# Other Useful Info 
+**Check Processes (jps):**
+
+* Run the jps command in your terminal.On Master, you should see: NameNode, SecondaryNameNode, and ResourceManager.On Workers, you should see: DataNode and NodeManager.
+
+* Web Interfaces:View HDFS Health Status: Open http://hadoop-master:9870 in your web browser. 
+
+* Under the "Datanodes" tab, you should see 2 live nodes listed.View YARN Cluster Manager: Open http://hadoop-master:8088.
+
 
 ## Cluster & Node Reports
 
