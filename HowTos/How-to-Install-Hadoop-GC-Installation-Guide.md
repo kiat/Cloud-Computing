@@ -163,6 +163,10 @@ On `master`, edit the following files under `/usr/local/hadoop/etc/hadoop/`:
    **`hdfs-site.xml`** — sets replication (2, to match your 2 worker/DataNode setup) and storage directories:
    ```xml
    <configuration>
+         <property>
+             <name>dfs.namenode.rpc-bind-host</name>
+             <value>0.0.0.0</value>
+         </property>
        <property>
            <name>dfs.replication</name>
            <value>2</value>
