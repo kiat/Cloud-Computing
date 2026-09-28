@@ -357,3 +357,15 @@ Use these commands if you need a clean list of hostnames or want to inspect the 
     yarn node -list -all
     ```
     *Lists the worker nodes handling the computation (NodeManagers) rather than just storage. Useful if you are running MapReduce or Spark jobs.*
+
+# HDFS cluster addresses 
+
+
+On this cluster HDFS has the following address: 
+
+```
+hdfs://master:8020
+```
+
+or just a one slash / 
+
