@@ -193,12 +193,36 @@ On `master`, edit the following files under `/usr/local/hadoop/etc/hadoop/`:
    **`mapred-site.xml`**  Tells MapReduce to run on YARN instead of the default local mode:
    
    ```xml
-   <configuration>
-       <property>
-           <name>mapreduce.framework.name</name>
-           <value>yarn</value>
-       </property>
-   </configuration>
+<configuration>
+    <property>
+        <name>mapreduce.framework.name</name>
+        <value>yarn</value>
+    </property>
+
+<!-- Points YARN to the MapReduce libraries -->
+    <property>
+        <name>yarn.app.mapreduce.am.env</name>
+        <value>HADOOP_MAPRED_HOME=/usr/local/hadoop</value>
+    </property>
+    <property>
+        <name>mapreduce.map.env</name>
+        <value>HADOOP_MAPRED_HOME=/usr/local/hadoop</value>
+    </property>
+    <property>
+        <name>mapreduce.reduce.env</name>
+        <value>HADOOP_MAPRED_HOME=/usr/local/hadoop</value>
+    </property>
+
+<!--
+Run this command on your master node to print your environment's exact classpath:
+hadoop classpath
+ -->
+    <property>
+        <name>mapreduce.application.classpath</name>
+    	<value>/usr/local/hadoop/etc/hadoop:/usr/local/hadoop/share/hadoop/common/lib/*:/usr/local/hadoop/share/hadoop/common/*:/usr/local/hadoop/share/hadoop/hdfs:/usr/local/hadoop/share/hadoop/hdfs/lib/*:/usr/local/hadoop/share/hadoop/hdfs/*:/usr/local/hadoop/share/hadoop/mapreduce/lib/*:/usr/local/hadoop/share/hadoop/mapreduce/*:/usr/local/hadoop/share/hadoop/yarn:/usr/local/hadoop/share/hadoop/yarn/lib/*:/usr/local/hadoop/share/hadoop/yarn/*</value>
+    </property>
+
+</configuration>
    ```
 
    **`yarn-site.xml`** Tells NodeManagers where the ResourceManager is and enables the shuffle service MapReduce needs:
