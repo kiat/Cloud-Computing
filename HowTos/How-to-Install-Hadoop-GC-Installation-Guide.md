@@ -400,5 +400,5 @@ or just a one slash /
 hadoop jar  MapReduce-WordCount-example-0.1-SNAPSHOT.jar   edu.cs.utexas.HadoopEx.WordCount    hdfs://master:8020/data/WikipediaPages_oneDocPerLine_1000Lines_small.txt hdfs://master:8020/data/output
 ```
 
-**Note 1:** Jar file must be on the master node and be addressed as a local file and not as a hdfs file. 
-**Note 2:** Main Class should be specified like "edu.cs.utexas.HadoopEx.WordCount" even it is already specified in the jar file. 
+* **Note 1:** Jar file must be on the master node and be addressed as a local file and not as a hdfs file. 
+* **Note 2:** Main Class should be specified like "edu.cs.utexas.HadoopEx.WordCount" even it is already specified in the jar file. 
