@@ -155,7 +155,7 @@ On `master`, edit the following files under `/usr/local/hadoop/etc/hadoop/`:
    <configuration>
        <property>
            <name>fs.defaultFS</name>
-           <value>hdfs://master:9000</value>
+           <value>hdfs://master:8020</value>
        </property>
    </configuration>
    ```
@@ -228,7 +228,7 @@ The "Web UI Ports" firewall section later in this guide only opens ports for **e
 
    | Purpose | Port |
    |---|---|
-   | NameNode RPC (`fs.defaultFS`) | `9000` |
+   | NameNode RPC (`fs.defaultFS`) | `8020` |
    | DataNode data transfer | `9866` |
    | DataNode IPC | `9867` |
    | YARN ResourceManager (scheduler/tracker/RM/admin) | `8030`–`8033` |
@@ -236,7 +236,7 @@ The "Web UI Ports" firewall section later in this guide only opens ports for **e
    If all 3 VMs are in GCP's **default** auto-mode VPC network, this traffic is usually already allowed by the built-in `default-allow-internal` firewall rule (it permits all internal TCP/UDP traffic between instances in that network). If you're using a **custom VPC network**, or want to be explicit, create a rule the same way as the Web UI ports below:
    * **Targets:** your cluster's instance tags (e.g. `hadoop-cluster`)
    * **Source filter:** the VPC's internal IP range (e.g. `10.128.0.0/9`), or your cluster's own tag
-   * **Protocols and ports:** TCP `9000, 9866, 9867, 8030-8033`
+   * **Protocols and ports:** TCP `8020, 9866, 9867, 8030-8033`
 
 ---
 
