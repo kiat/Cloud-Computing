@@ -39,11 +39,12 @@ http://spark.apache.org/downloads.html
 
 Direct link is for example following 
 
-https://www.apache.org/dyn/closer.lua/spark/spark-4.2.0/spark-4.2.0-bin-hadoop3.tgz
+https://downloads.apache.org/spark/spark-4.2.0/spark-4.2.0-bin-hadoop3.tgz
+
 
 You can run the following command to download: 
 
-```wget https://www.apache.org/dyn/closer.lua/spark/spark-4.2.0/spark-4.2.0-bin-hadoop3.tgz```
+```wget https://downloads.apache.org/spark/spark-4.2.0/spark-4.2.0-bin-hadoop3.tgz```
 
 
 Uncompress it 
