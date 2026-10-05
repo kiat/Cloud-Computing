@@ -39,20 +39,20 @@ http://spark.apache.org/downloads.html
 
 Direct link is for example following 
 
-[http://mirror.metrocast.net/apache/spark/spark-3.0.0/spark-3.0.0-bin-hadoop2.7.tgz](https://www.apache.org/dyn/closer.lua/spark/spark-4.0.1/spark-4.0.1-bin-hadoop3.tgz)
+https://www.apache.org/dyn/closer.lua/spark/spark-4.2.0/spark-4.2.0-bin-hadoop3.tgz
 
 You can run the following command to download: 
 
-```wget https://www.apache.org/dyn/closer.lua/spark/spark-4.0.1/spark-4.0.1-bin-hadoop3.tgz```
+```wget https://www.apache.org/dyn/closer.lua/spark/spark-4.2.0/spark-4.2.0-bin-hadoop3.tgz```
 
 
 Uncompress it 
 
-```tar xvfz spark-4.0.1-bin-hadoop3.tgz```
+```tar xvfz spark-4.2.0-bin-hadoop3.tgz```
 
 I have my spark on the following folder 
 
-```/Users/YOUR-ACCOUNT/spark-4.0.1-bin-hadoop3.tgz```
+```/Users/YOUR-ACCOUNT/spark-4.2.0-bin-hadoop3.tgz```
 
 # Step-3 -  Setup Enviroment Variables. 
 
@@ -68,7 +68,7 @@ https://medium.com/@sumitmenon/how-to-get-anaconda-to-work-with-oh-my-zsh-on-mac
 
 ```nano .zshrc```
 
-```export SPARK_HOME=/Users/YOUR-ACCOUNT/spark-4.0.1-bin-hadoop3```
+```export SPARK_HOME=/Users/YOUR-ACCOUNT/spark-4.2.0-bin-hadoop3```
 
 ```export PYTHONPATH=$SPARK_HOME/python:$PYTHONPATH```
 
