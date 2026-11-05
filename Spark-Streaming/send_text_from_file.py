@@ -36,10 +36,12 @@ def main(filename):
            # Sleep for some time to not send too much data!   
            time.sleep(0.10)
            
-           # as an example we send here just the line text.
-           tweet_text = line.encode('utf-8')
-           conn.send(tweet_text)
-           
+           if counter>1:
+            # we do not send the header line 
+            # as an example we send here just the line text.
+            tweet_text = line.encode('utf-8')
+            conn.send(tweet_text)
+            
            if(counter % 100 == 0):
                print(counter)
 
