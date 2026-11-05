@@ -34,8 +34,8 @@ def main(filename):
            counter += 1
 
            # Sleep for some time to not send too much data!   
-           time.sleep(0.10)
-           
+           time.sleep(0.5)
+
            if counter>1:
             # we do not send the header line 
             # as an example we send here just the line text.

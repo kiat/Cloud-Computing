@@ -3,6 +3,8 @@
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import explode, split, window, col, count, current_timestamp
 from pyspark.sql.types import StructType, StructField, IntegerType, StringType
+from pyspark.sql.functions import max, max_by
+
 
 from pyspark.sql.functions import (
     col,
@@ -218,17 +220,46 @@ def print_top_airline(batch_df, batch_id):
 # 7. Start Structured Streaming Query
 # --------------------------------------------------
 
-query = (
+# query = (
+#     windowed_flights
+#     .writeStream
+#     .outputMode("update")
+#     .foreachBatch(print_top_airline)
+#     .trigger(processingTime="5 seconds")
+#     .start()
+# )
+
+# query.awaitTermination()
+
+
+
+
+# Find the airline with the most flights
+top_airline = (
     windowed_flights
+    .groupBy("window")
+    .agg(
+        max_by(
+            col("AIRLINE"),
+            col("flight_count")
+        ).alias("AIRLINE"),
+        max("flight_count").alias("flight_count")
+    )
+)
+
+# Print the result stream to the console
+console_query = (
+    top_airline
     .writeStream
     .outputMode("update")
-    .foreachBatch(print_top_airline)
+    .format("console")
+    .option("truncate", False)
+    .option("numRows", 10)
     .trigger(processingTime="5 seconds")
     .start()
 )
 
-query.awaitTermination()
-
+console_query.awaitTermination()
 
 
 
