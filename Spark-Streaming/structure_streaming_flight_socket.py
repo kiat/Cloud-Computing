@@ -28,8 +28,8 @@ spark = (
     .getOrCreate()
 )
 
-spark.sparkContext.setLogLevel("WARN")
-
+# spark.sparkContext.setLogLevel("WARN")
+spark.sparkContext.setLogLevel("FATAL")
 
 
 flightSchema = StructType() \
@@ -93,7 +93,7 @@ flight_stream = (
     spark.readStream
     .format("socket")
     .option("host", "localhost")
-    .option("port", 9999)
+    .option("port", 9009)
     .load()
 )
 
@@ -150,12 +150,12 @@ windowed_flights = (
     )
 )
 
-
 # --------------------------------------------------
 # 6. Find the Airline with the Most Flights
 # --------------------------------------------------
 
-# Store the last 10 results
+from collections import deque
+
 last_10_results = deque(maxlen=10)
 
 
@@ -165,134 +165,79 @@ def print_top_airline(batch_df, batch_id):
     if batch_df.isEmpty():
         return
 
-    # Select the most recent window
+    # Find the most recent window in this micro-batch
     latest_window = (
         batch_df
-        .agg({"window.end": "max"})
-        .collect()[0][0]
+        .agg(max(col("window.end")).alias("latest"))
+        .first()["latest"]
     )
 
     if latest_window is None:
         return
 
-    # Keep only the latest window
+    # Select only the results for the latest window
     latest_counts = (
         batch_df
-        .filter(
-            col("window.end") == latest_window
-        )
-        .select("AIRLINE", "flight_count")
+        .filter(col("window.end") == latest_window)
     )
 
-    # Find the airline with the maximum count
+    # Find the airline with the maximum flight count
     top_airline = (
         latest_counts
-        .orderBy(desc("flight_count"))
+        .orderBy(
+            desc("flight_count"),
+            col("AIRLINE").asc()
+        )
         .first()
     )
 
-    if top_airline is not None:
+    if top_airline is None:
+        return
 
-        result = (
-            batch_id,
-            latest_window,
-            top_airline["AIRLINE"],
-            top_airline["flight_count"]
+    result = (
+        batch_id,
+        latest_window,
+        top_airline["AIRLINE"],
+        top_airline["flight_count"]
+    )
+
+    last_10_results.append(result)
+
+    print("\n" + "=" * 80)
+    print("TOP AIRLINE IN THE LATEST WINDOW")
+    print("=" * 80)
+
+    print(
+        f"Batch ID: {batch_id}\n"
+        f"Window End: {latest_window}\n"
+        f"Airline: {top_airline['AIRLINE']}\n"
+        f"Flight Count: {top_airline['flight_count']}"
+    )
+
+    print("\nLast 10 Results")
+    print("-" * 80)
+
+    for item in last_10_results:
+
+        print(
+            f"Batch: {item[0]:<5} | "
+            f"Window End: {item[1]} | "
+            f"Airline: {item[2]:<5} | "
+            f"Flights: {item[3]}"
         )
-
-        last_10_results.append(result)
-
-        print("\n" + "=" * 65)
-        print("Last 10 Results")
-        print("=" * 65)
-
-        for item in last_10_results:
-
-            print(
-                f"Batch: {item[0]:<5} | "
-                f"Window End: {item[1]} | "
-                f"Airline: {item[2]:<5} | "
-                f"Flights: {item[3]}"
-            )
 
 
 # --------------------------------------------------
 # 7. Start Structured Streaming Query
 # --------------------------------------------------
 
-# query = (
-#     windowed_flights
-#     .writeStream
-#     .outputMode("update")
-#     .foreachBatch(print_top_airline)
-#     .trigger(processingTime="5 seconds")
-#     .start()
-# )
-
-# query.awaitTermination()
-
-
-
-
-# Find the airline with the most flights
-top_airline = (
+query = (
     windowed_flights
-    .groupBy("window")
-    .agg(
-        max_by(
-            col("AIRLINE"),
-            col("flight_count")
-        ).alias("AIRLINE"),
-        max("flight_count").alias("flight_count")
-    )
-)
-
-# Print the result stream to the console
-console_query = (
-    top_airline
     .writeStream
     .outputMode("update")
-    .format("console")
-    .option("truncate", False)
-    .option("numRows", 10)
+    .foreachBatch(print_top_airline)
     .trigger(processingTime="5 seconds")
     .start()
 )
 
-console_query.awaitTermination()
-
-
-
-
-
-
-
-
-
-
-
-
-
-# # Add timestamp column
-# lines = flights.withColumn("timestamp", current_timestamp())
-
-# # Select only AIRLINE
-# # 
-# windowed_counts = lines \
-#     .select("timestamp", "AIRLINE")\
-#     .groupBy(
-#         window(col("timestamp"), "10 seconds", "2 seconds"),
-#         col("AIRLINE")
-#     ).count()
-
-# # Output to console
-# # We can have different output mode like "completed"
-# query = windowed_counts.writeStream \
-#     .trigger(processingTime='2 seconds')\
-#     .outputMode("update") \
-#     .format("console") \
-#     .option("truncate", "false") \
-#     .start()
-# query.awaitTermination()
-
-
+query.awaitTermination()
