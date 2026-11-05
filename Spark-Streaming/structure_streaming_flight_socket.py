@@ -73,13 +73,13 @@ flightSchema = StructType() \
 # you should have inside flights folder a file with name flights.csv 
 # 565M 
 
-flights = spark \
-    .readStream \
-    .option("sep", ",") \
-    .schema(flightSchema) \
-    .csv("flights")
+# flights = spark \
+#     .readStream \
+#     .option("sep", ",") \
+#     .schema(flightSchema) \
+#     .csv("flights")
 
-flights.printSchema()
+# flights.printSchema()
 
 
 
@@ -105,7 +105,7 @@ parsed_flights = (
     .select(
         from_csv(
             col("value"),
-            flightSchema,
+              flightSchema.toDDL(),
             {"sep": ",", "mode": "PERMISSIVE"}
         ).alias("flight")
     )
